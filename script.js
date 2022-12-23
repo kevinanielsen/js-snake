@@ -16,12 +16,14 @@ var bonusCount = 0;
 var intervalId;
 var key = 'ArrowRight';
 
+        // Check keypress
 document.addEventListener('keydown', function(event) {
     if(event.key === 'ArrowRight' || event.key === 'ArrowLeft' || event.key === 'ArrowUp' || event.key === 'ArrowDown'){
         key = event.key
     };
 });
 
+        // Start button
 document.getElementById('start').addEventListener('click', () => {
     if(intervalId){clearInterval(intervalId)};
     canvas.style.backgroundColor = 'rgb(144, 238, 144)';
@@ -32,9 +34,11 @@ document.getElementById('start').addEventListener('click', () => {
     length = pastPositions.length;
     intervalId = setInterval(draw, 250);
     ctx.clearRect(0, 0, 505, 505);
+    bonusCount = 0;
 });
     
-function dead() {                                // Clear interval, make background red and draw "DEAD" on canvas
+        // Clear interval, make background red and draw "DEAD" on canvas
+function dead() {                                
     clearInterval(intervalId);
     canvas.style.backgroundColor = 'rgb(255,114,118)';
     ctx.fillStyle = "rgb(255, 255, 0)"
@@ -96,13 +100,16 @@ function bonusSystem() {
 
 var bonus = false;
 let i = 0;
-function draw() {                                // Game Function
+
+        // Game Function
+function draw() {                                
     posId++;
 
     bonusSystem();
     ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
 
-    if(w >= 19 || w < 0 || h >= 19 || h < 0){    // Hitting Border
+        // Hitting Border
+    if(w >= 19 || w < 0 || h >= 19 || h < 0){    
         dead();
         return;
     } else if (pastPositions.find(obj => obj.w === w && obj.h === h)) {
@@ -112,7 +119,8 @@ function draw() {                                // Game Function
 
     pastPositions.push({w: w, h: h, id: posId});
 
-    if(!bonus) {                                 // If field isn't a bonus, the snake should keep it's length
+        // If field isn't a bonus, the snake should keep it's length
+    if(!bonus) {                                 
         ctx.clearRect(5 + (pastPositions[0].w * 5) + (pastPositions[0].w * 20), 5 + (pastPositions[0].h * 5) + (pastPositions[0].h * 20), 20, 20);
         pastPositions.shift();
     }
