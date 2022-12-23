@@ -1,0 +1,26 @@
+html {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+canvas {
+    background-color: rgb(144, 238, 144);
+}
+
+#start {
+    position: fixed;
+    top: 30px;
+}
