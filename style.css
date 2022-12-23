@@ -1,3 +1,7 @@
+* {
+    font-family: sans-serif;
+}
+
 html {
     display: flex;
     flex-direction: column;
@@ -14,13 +18,30 @@ body {
     align-items: center;
     height: 100%;
     width: 100%;
+    background-color: #181818;
 }
 
 canvas {
     background-color: rgb(144, 238, 144);
 }
 
+p {
+    color: lightskyblue;
+    font-size: 1.2rem;
+    position: fixed;
+    top: 7%;
+}
+
 #start {
     position: fixed;
-    top: 30px;
+    top: 2%;
+
+    width: 100px;
+    height: 40px;
+
+    border: 0;
+    background-color: rgb(52, 52, 52);
+    color: lightskyblue;
+    font-weight: 800;
+
 }

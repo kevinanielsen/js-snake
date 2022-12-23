@@ -11,7 +11,10 @@ var width = 20;
 var length = 0;
 var posId = 0;
 var pastPositions = [{w: 1, h: 1, id: -5}, {w: 2, h: 2, id: -4}, {w: 3, h: 3, id: -3}, {w: 4, h: 4, id: -2}, {w: 5, h: 5, id: -1}, {w: 6, h: 6, id: 0}];
+
 var bonusCount = 0;
+var bonuses = []
+var bonusId = 0;
 
 var intervalId;
 var key = 'ArrowRight';
@@ -19,7 +22,12 @@ var key = 'ArrowRight';
         // Check keypress
 document.addEventListener('keydown', function(event) {
     if(event.key === 'ArrowRight' || event.key === 'ArrowLeft' || event.key === 'ArrowUp' || event.key === 'ArrowDown'){
-        key = event.key
+        if((key === 'ArrowRight' && event.key === 'ArrowLeft') || (key === 'ArrowLeft' && event.key === 'ArrowRight') || (key === 'ArrowUp' && event.key === 'ArrowDown') || (key === 'ArrowDown' && event.key === 'ArrowUp')) {
+            return;
+        } else {
+            key = event.key;
+        }
+        
     };
 });
 
@@ -35,48 +43,29 @@ document.getElementById('start').addEventListener('click', () => {
     intervalId = setInterval(draw, 250);
     ctx.clearRect(0, 0, 505, 505);
     bonusCount = 0;
+    bonuses = [];
 });
-    
+
         // Clear interval, make background red and draw "DEAD" on canvas
 function dead() {                                
     clearInterval(intervalId);
     canvas.style.backgroundColor = 'rgb(255,114,118)';
     ctx.fillStyle = "rgb(255, 255, 0)"
-    // D
-    ctx.fillRect(97, 200, 20, 100);
-    ctx.fillRect(117, 200, 20, 20);
-    ctx.fillRect(117, 280, 20, 20);
-    ctx.fillRect(137, 220, 20, 60);
-    // E
-    ctx.fillRect(177, 200, 20, 100);
-    ctx.fillRect(187, 200, 40, 20);
-    ctx.fillRect(187, 240, 20, 20);
-    ctx.fillRect(187, 280, 40, 20);
-    // A
-    ctx.fillRect(247, 200, 20, 100);
-    ctx.fillRect(267, 200, 40, 20);
-    ctx.fillRect(267, 240, 40, 20);
-    ctx.fillRect(297, 200, 20, 100);
-    // D
-    ctx.fillRect(337, 200, 20, 100);
-    ctx.fillRect(357, 200, 20, 20);
-    ctx.fillRect(357, 280, 20, 20);
-    ctx.fillRect(377, 220, 20, 60);
+    drawDead()
+    
 }
 
-var bonuses = []
-var bonusId = 0;
-
+        // Bonus System
 function bonusSystem() {
-    ctx.fillStyle = "rgba(255, 50, 50, 0.8)";
+    ctx.fillStyle = "rgb(255, 50, 50)";
 
     if(bonuses.find(obj => obj.x === w && obj.y === h)) {
         bonus = true;
         bonusCount--;
         var bonusAte = bonuses.find(obj => obj.x === w && obj.y === h);
-        ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+        ctx.fillStyle = "rgb(0, 0, 0)";
         ctx.fillRect(5 + (bonusAte.x * 5) + (bonusAte.x * 20), 5 + (bonusAte.y * 5) + (bonusAte.y * 20), 20, 20);
-        ctx.fillStyle = "rgba(255, 50, 50, 0.8)";
+        ctx.fillStyle = "rgb(255, 50, 50)";
         var bonusAteIndex = bonuses.findIndex(obj => obj === bonusAte);
         bonuses.splice(bonusAteIndex, 1);
     }
@@ -106,7 +95,7 @@ function draw() {
     posId++;
 
     bonusSystem();
-    ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+    ctx.fillStyle = "rgb(0, 0, 0)";
 
         // Hitting Border
     if(w >= 19 || w < 0 || h >= 19 || h < 0){    
@@ -143,4 +132,68 @@ function draw() {
     document.getElementById('score').innerHTML = `Points: ${length}`;
     bonus = false
     i++;
+}
+
+function drawDead() {
+    // D
+    ctx.fillRect((5 + (2 * 5) + (2 * 20)), (5 + (7 * 5) + (7 * 20)), 20, 20);
+    ctx.fillRect((5 + (2 * 5) + (2 * 20)), (5 + (8 * 5) + (8 * 20)), 20, 20);
+    ctx.fillRect((5 + (2 * 5) + (2 * 20)), (5 + (9 * 5) + (9 * 20)), 20, 20);
+    ctx.fillRect((5 + (2 * 5) + (2 * 20)), (5 + (10 * 5) + (10 * 20)), 20, 20);
+    ctx.fillRect((5 + (2 * 5) + (2 * 20)), (5 + (11 * 5) + (11 * 20)), 20, 20);
+
+    ctx.fillRect((5 + (3 * 5) + (3 * 20)), (5 + (7 * 5) + (7 * 20)), 20, 20);
+    ctx.fillRect((5 + (3 * 5) + (3 * 20)), (5 + (11 * 5) + (11 * 20)), 20, 20);
+
+    ctx.fillRect((5 + (4 * 5) + (4 * 20)), (5 + (8 * 5) + (8 * 20)), 20, 20);
+    ctx.fillRect((5 + (4 * 5) + (4 * 20)), (5 + (9 * 5) + (9 * 20)), 20, 20);
+    ctx.fillRect((5 + (4 * 5) + (4 * 20)), (5 + (10 * 5) + (10 * 20)), 20, 20);
+
+    // E
+    ctx.fillRect((5 + (6 * 5) + (6 * 20)), (5 + (7 * 5) + (7 * 20)), 20, 20);
+    ctx.fillRect((5 + (6 * 5) + (6 * 20)), (5 + (8 * 5) + (8 * 20)), 20, 20);
+    ctx.fillRect((5 + (6 * 5) + (6 * 20)), (5 + (9 * 5) + (9 * 20)), 20, 20);
+    ctx.fillRect((5 + (6 * 5) + (6 * 20)), (5 + (10 * 5) + (10 * 20)), 20, 20);
+    ctx.fillRect((5 + (6 * 5) + (6 * 20)), (5 + (11 * 5) + (11 * 20)), 20, 20);
+
+    ctx.fillRect((5 + (7 * 5) + (7 * 20)), (5 + (7 * 5) + (7 * 20)), 20, 20);
+    ctx.fillRect((5 + (8 * 5) + (8 * 20)), (5 + (7 * 5) + (7 * 20)), 20, 20);
+
+    ctx.fillRect((5 + (7 * 5) + (7 * 20)), (5 + (9 * 5) + (9 * 20)), 20, 20);
+
+    ctx.fillRect((5 + (7 * 5) + (7 * 20)), (5 + (11 * 5) + (11 * 20)), 20, 20);
+    ctx.fillRect((5 + (8 * 5) + (8 * 20)), (5 + (11 * 5) + (11 * 20)), 20, 20);
+
+    // A
+    ctx.fillRect((5 + (10 * 5) + (10 * 20)), (5 + (7 * 5) + (7 * 20)), 20, 20);
+    ctx.fillRect((5 + (10 * 5) + (10 * 20)), (5 + (8 * 5) + (8 * 20)), 20, 20);
+    ctx.fillRect((5 + (10 * 5) + (10 * 20)), (5 + (9 * 5) + (9 * 20)), 20, 20);
+    ctx.fillRect((5 + (10 * 5) + (10 * 20)), (5 + (10 * 5) + (10 * 20)), 20, 20);
+    ctx.fillRect((5 + (10 * 5) + (10 * 20)), (5 + (11 * 5) + (11 * 20)), 20, 20);
+
+    ctx.fillRect((5 + (11 * 5) + (11 * 20)), (5 + (7 * 5) + (7 * 20)), 20, 20);
+    ctx.fillRect((5 + (12 * 5) + (12 * 20)), (5 + (7 * 5) + (7 * 20)), 20, 20);
+
+    ctx.fillRect((5 + (11 * 5) + (11 * 20)), (5 + (9 * 5) + (9 * 20)), 20, 20);
+    ctx.fillRect((5 + (12 * 5) + (12 * 20)), (5 + (9 * 5) + (9 * 20)), 20, 20);
+
+    ctx.fillRect((5 + (13 * 5) + (13 * 20)), (5 + (7 * 5) + (7 * 20)), 20, 20);
+    ctx.fillRect((5 + (13 * 5) + (13 * 20)), (5 + (8 * 5) + (8 * 20)), 20, 20);
+    ctx.fillRect((5 + (13 * 5) + (13 * 20)), (5 + (9 * 5) + (9 * 20)), 20, 20);
+    ctx.fillRect((5 + (13 * 5) + (13 * 20)), (5 + (10 * 5) + (10 * 20)), 20, 20);
+    ctx.fillRect((5 + (13 * 5) + (13 * 20)), (5 + (11 * 5) + (11 * 20)), 20, 20);
+
+    // D
+    ctx.fillRect((5 + (15 * 5) + (15 * 20)), (5 + (7 * 5) + (7 * 20)), 20, 20);
+    ctx.fillRect((5 + (15 * 5) + (15 * 20)), (5 + (8 * 5) + (8 * 20)), 20, 20);
+    ctx.fillRect((5 + (15 * 5) + (15 * 20)), (5 + (9 * 5) + (9 * 20)), 20, 20);
+    ctx.fillRect((5 + (15 * 5) + (15 * 20)), (5 + (10 * 5) + (10 * 20)), 20, 20);
+    ctx.fillRect((5 + (15 * 5) + (15 * 20)), (5 + (11 * 5) + (11 * 20)), 20, 20);
+
+    ctx.fillRect((5 + (16 * 5) + (16 * 20)), (5 + (7 * 5) + (7 * 20)), 20, 20);
+    ctx.fillRect((5 + (16 * 5) + (16 * 20)), (5 + (11 * 5) + (11 * 20)), 20, 20);
+
+    ctx.fillRect((5 + (17 * 5) + (17 * 20)), (5 + (8 * 5) + (8 * 20)), 20, 20);
+    ctx.fillRect((5 + (17 * 5) + (17 * 20)), (5 + (9 * 5) + (9 * 20)), 20, 20);
+    ctx.fillRect((5 + (17 * 5) + (17 * 20)), (5 + (10 * 5) + (10 * 20)), 20, 20);
 }
