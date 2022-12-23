@@ -8,12 +8,12 @@ var currentXPos = 5 + (w * 5) + (w * 20)
 var currentYPos = 5 + (h * 5) + (h * 20)
 var width = 20;
 
-var length = 5;
+var length = 0;
 var posId = 0;
 var pastPositions = [{w: 1, h: 1, id: -5}, {w: 2, h: 2, id: -4}, {w: 3, h: 3, id: -3}, {w: 4, h: 4, id: -2}, {w: 5, h: 5, id: -1}, {w: 6, h: 6, id: 0}];
+var bonusCount = 0;
 
-
-var id;
+var intervalId;
 var key = 'ArrowRight';
 
 document.addEventListener('keydown', function(event) {
@@ -23,18 +23,19 @@ document.addEventListener('keydown', function(event) {
 });
 
 document.getElementById('start').addEventListener('click', () => {
-    if(id){clearInterval(id)};
+    if(intervalId){clearInterval(intervalId)};
     canvas.style.backgroundColor = 'rgb(144, 238, 144)';
     key = 'ArrowRight';
     w = 0;
     h = 0;
     pastPositions = [{w: 1, h: 1, id: -5}, {w: 2, h: 2, id: -4}, {w: 3, h: 3, id: -3}, {w: 4, h: 4, id: -2}, {w: 5, h: 5, id: -1}, {w: 6, h: 6, id: 0}];
-    id = setInterval(draw, 300);
+    length = pastPositions.length;
+    intervalId = setInterval(draw, 250);
     ctx.clearRect(0, 0, 505, 505);
 });
-
+    
 function dead() {                                // Clear interval, make background red and draw "DEAD" on canvas
-    clearInterval(id);
+    clearInterval(intervalId);
     canvas.style.backgroundColor = 'rgb(255,114,118)';
     ctx.fillStyle = "rgb(255, 255, 0)"
     // D
@@ -59,11 +60,47 @@ function dead() {                                // Clear interval, make backgro
     ctx.fillRect(377, 220, 20, 60);
 }
 
+var bonuses = []
+var bonusId = 0;
+
+function bonusSystem() {
+    ctx.fillStyle = "rgba(255, 50, 50, 0.8)";
+
+    if(bonuses.find(obj => obj.x === w && obj.y === h)) {
+        bonus = true;
+        bonusCount--;
+        var bonusAte = bonuses.find(obj => obj.x === w && obj.y === h);
+        ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+        ctx.fillRect(5 + (bonusAte.x * 5) + (bonusAte.x * 20), 5 + (bonusAte.y * 5) + (bonusAte.y * 20), 20, 20);
+        ctx.fillStyle = "rgba(255, 50, 50, 0.8)";
+        var bonusAteIndex = bonuses.findIndex(obj => obj === bonusAte);
+        bonuses.splice(bonusAteIndex, 1);
+    }
+
+    var randomXPos;
+    var randomYPos;
+    
+    while(bonusCount < 3) {
+        bonusId++;
+        randomXPos = Math.floor(Math.random() * 20);
+        randomYPos = Math.floor(Math.random() * 20);
+        while(pastPositions.find(obj => obj.w === randomXPos && obj.h === randomYPos)) {
+            randomXPos = Math.floor(Math.random() * 20);
+            randomYPos = Math.floor(Math.random() * 20);
+        }
+        ctx.fillRect(5 + (randomXPos * 5) + (randomXPos * 20), 5 + (randomYPos * 5) + (randomYPos * 20), 20, 20);
+        bonusCount++;
+        bonuses.push({x: randomXPos, y: randomYPos, id: bonusId})
+    }
+}
+
+var bonus = false;
 let i = 0;
-function draw() {
-    var bonus = false;
-    ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+function draw() {                                // Game Function
     posId++;
+
+    bonusSystem();
+    ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
 
     if(w >= 19 || w < 0 || h >= 19 || h < 0){    // Hitting Border
         dead();
@@ -73,14 +110,12 @@ function draw() {
         return;
     }
 
-    if(i !== 0) {                                // Don't add to length when starting
-        pastPositions.push({w: w, h: h, id: id});
-    }
+    pastPositions.push({w: w, h: h, id: posId});
+
     if(!bonus) {                                 // If field isn't a bonus, the snake should keep it's length
         ctx.clearRect(5 + (pastPositions[0].w * 5) + (pastPositions[0].w * 20), 5 + (pastPositions[0].h * 5) + (pastPositions[0].h * 20), 20, 20);
         pastPositions.shift();
     }
-
 
     if(key === 'ArrowRight'){
         w++;
@@ -97,10 +132,7 @@ function draw() {
     ctx.fillRect(currentXPos, currentYPos, width, width);
 
     length = pastPositions.length;
-    canvas.innerHTML = `Points: ${length}`;
+    document.getElementById('score').innerHTML = `Points: ${length}`;
+    bonus = false
     i++;
 }
-    
-
-
-
